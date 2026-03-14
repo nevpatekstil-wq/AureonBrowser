@@ -1,0 +1,37 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Kodlari Al
+      uses: actions/checkout@v4
+
+    - name: Java Kurulumu
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Android Ayarlarini Yap
+      run: echo "android.useAndroidX=true" > gradle.properties
+
+    - name: Gradle Kurulumu
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.5'
+
+    - name: APK'yi Uret
+      run: gradle assembleDebug
+
+    - name: APK'yi Yukle
+      uses: actions/upload-artifact@v4
+      with:
+        name: AureonBrowser-APK
+        path: app/build/outputs/apk/debug/app-debug.apk
